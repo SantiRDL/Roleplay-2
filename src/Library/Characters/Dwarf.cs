@@ -1,6 +1,6 @@
 namespace RoleplayGame
 {
-    public class Dwarf
+    public class Dwarf : ICharacter
     {
         private int health = 100;
 
@@ -39,7 +39,7 @@ namespace RoleplayGame
             {
                 return this.health;
             }
-            private set
+            set                       //Quitamos private porque no funcionaba la interfaz
             {
                 this.health = value < 0 ? 0 : value;
             }

@@ -1,10 +1,11 @@
 namespace RoleplayGame
 {
-    public class Archer
+    public class Archer : ICharacter
     {
-        private int health = 100;
+        private int health;
 
-        public Archer(string name)
+
+        public Archer(string name, int health)
         {
             this.Name = name;
         }
@@ -37,7 +38,7 @@ namespace RoleplayGame
             {
                 return this.health;
             }
-            private set
+            set                           //Quitamos private porque no funcionaba la interfaz
             {
                 this.health = value < 0 ? 0 : value;
             }
