@@ -2,7 +2,7 @@ namespace RoleplayGame
 {
     public class Archer : ICharacter, IOffensiveItems, IDefensiveItems
     {
-        private int health;
+        private int health = 100;
 
 
         public Archer(string name)
