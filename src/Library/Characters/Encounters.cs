@@ -1,29 +1,26 @@
-using System;
-using System.Collections;
+using System.Collections.Generic;
 
 namespace RoleplayGame
 {
     public class Encounters
     {
-        ArrayList Heroes;
-        ArrayList BadGuys;
+        private List<Character> heroes;
+        private List<Character> badGuys;
 
         /// <summary>
-        /// Método para agregar héroes a la lista de héroes.
+        /// Método para agregar personajes a su respectiva lista.
         /// </summary>
         /// <param name="heroe"></param>
-        public void AgregarHeroe(Character heroe)
+        public void AgregarPersonaje(Character character)
         {
-            this.Heroes.Add(heroe);
-        }
-
-        /// <summary>
-        /// Método para agregar enemigos a la lista de enemigos.
-        /// </summary>
-        /// <param name="enemigo"></param>
-        public void AgregarEnemigo(Character enemigo)
-        {
-            this.BadGuys.Add(enemigo);
+            if (character.IsHero)
+            {
+                this.heroes.Add(character);
+            }
+            else
+            {
+                this.badGuys.Add(character);
+            }
         }
 
         /// <summary>
@@ -31,16 +28,16 @@ namespace RoleplayGame
         /// </summary>
         /// <param name="personajes"></param>
         /// <returns></returns>
-        public bool HayPersonajesVivos(ArrayList personajes)
+        public bool HayPersonajesVivos(List<Character> personajes)
         {
             int i = 0;
-            int largo = personajes.Count();
+            int largo = personajes.Count;
             bool vivos = false;
             while (i < largo && !vivos)
             {
                 if (personajes[i].Health > 0)
                 {
-                    vivos = True;
+                    vivos = true;
                 }
                 i = i + 1;
             }
@@ -52,11 +49,11 @@ namespace RoleplayGame
         /// </summary>
         /// <param name="personajes"></param>
         /// <returns></returns>
-        public int CantidadPersonajesVivos(ArrayList personajes)
+        public int CantidadPersonajesVivos(List<Character> personajes)
         {
             int i = 0;
             int vivos = 0;
-            int largo = personajes.Count();
+            int largo = personajes.Count;
             while (i < largo)
             {
                 if (personajes[i].Health > 0)
@@ -74,97 +71,45 @@ namespace RoleplayGame
         public void DoEncounter()
         {   
             int i = 0;
-            j = 0;
-            int largoEnemigos = this.BadGuys.Count();
-            int largoHeroes = this.Heroes.Count();
-            bool buscar = False;
-            bool HeroeVivo = True;
-            while (HayPersonajesVivos(this.Heroes) && HayPersonajesVivos(this.BadGuys))
+            int j = 0;
+            int largoEnemigos = this.badGuys.Count;
+            int largoHeroes = this.heroes.Count;
+            while (HayPersonajesVivos(this.heroes) && HayPersonajesVivos(this.badGuys))
             {
-                i = 0; // Resteo variables cada vez que se ejecute el while.
-                j = 0;
-                largoEnemigos = this.BadGuys.Count();
-                largoHeroes = this.Heroes.Count();
-                buscar = False;
-                // Atacan enemigos primero.
-                if (CantidadPersonajesVivos(this.Heroes) == 1)  // Primer caso, varios enemigos y un héroe.
+                foreach (Character enemigo in badGuys)
                 {
-                    while (i < largoEnemigos && HeroeVivo)
+                    i = 0;
+                    enemigo.Attack(this.heroes[i]);
+                    if (i == largoHeroes - 1)
                     {
-                        while (j < largoHeroes && !buscar)      // Busco dónde está el héroe vivo en el array. Busca la primera vez que se entra al ciclo solamente.
+                        i = 0;
+                    }
+                    else
+                    {
+                        i += 1;
+                    }
+                }
+
+                if (HayPersonajesVivos(this.heroes))
+                {
+                    foreach (Character hero in this.heroes)
+                    {
+                        foreach(Character enemigo in this.badGuys)
                         {
-                            if (this.Heroes[j].Health > 0)
+                            hero.Attack(enemigo);
+                            if (enemigo.Health <= 0)
                             {
-                                buscar = True;
-                                int posicion = j;
+                                hero.VP += enemigo.VP;
+                                enemigo.VP = 0;
                             }
-                            j = j + 1;
-                        }
-                        this.BadGuys[i].Attack(this.Heroes[posicion]);
-                        if (this.Heroes[posicion].Health <= 0)
-                        {
-                            HeroeVivo = False;
-                        }
-                        i = i + 1;
-                    }
-                }
-                else if (CantidadPersonajesVivos(this.Heroes) >= CantidadPersonajesVivos(this.BadGuys)) // Segundo caso, misma cantidad de héroes que enemigos.
-                    {
-                        while (i < largoEnemigos)
-                        {
-                            this.BadGuys[i].Attack(this.Heroes[i]);
-                            i = i + 1;
-                        }
-                    }
-                    else        // Tercer caso, hay más enemigos que héroes.
-                    {
-                        this.BadGuys[j].Attack(this.Heroes[i]);     // El primer enemigo ataca al primer héroe.
-                        j = j + 1;                                  // Dentro del ciclo, el siguiente enemigo también ataca al primer héroe.
-                        while (i < largoHeroes && j < largoEnemigos)
-                        {
-                            this.BadGuys[j].Attack(this.Heroes[i]);
-                            i = i + 1;
-                            j = j + 1; 
-                        }
-                        if (i == largoHeroes)   // Agrego caso en que la diferencia entre héroes y enemigos sea mayor a uno, varios van a atacar al último héroe.
-                        {
-                            while (j < largoEnemigos)
+                            if (hero.VP >= 5)
                             {
-                                this.BadGuys[j].Attack(this.Heroes[i - 1]);
-                                j = j + 1;
+                                hero.Health = 100;
                             }
+                            
                         }
                     }
-                // Atacan los héroes, se vuelven a resetear las variables.
-                i = 0;
-                j = 0;
-                while (i < largoHeroes)
-                {
-                    while (j < largoEnemigos)
-                    {
-                        this.Heroes[i].Attack(this.BadGuys[j]);
-                        if (this.BadGuys[j].Health <= 0)
-                        {
-                            this.Heroes[i].VP = this.Heroes[i].VP + this.BadGuys[j].VP;
-                        }
-                        j = j + 1;
-                    }
-                    i = i + 1;
                 }
-            }
-            // Sale del primer while, es decir, ya no quedan héroes o enemigos. Los héroes vivos con 
-            // 5 o más VP, se curan.
-            i = 0;
-            while (i < largoHeroes)
-            {
-                if (this.Heroes[i].Health > 0)
-                {
-                    if (this.Heroes[i].VP >= 5)
-                    {
-                        this.Heroes[i].Cure();
-                    }
-                }
-                i = i + 1;
             }
         }
     }
