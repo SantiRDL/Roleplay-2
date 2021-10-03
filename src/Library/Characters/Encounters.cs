@@ -104,7 +104,7 @@ namespace RoleplayGame
                             }
                             if (hero.VP >= 5)
                             {
-                                hero.Health = 100;
+                                hero.Cure();
                             }
                             
                         }
