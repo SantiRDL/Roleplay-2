@@ -71,7 +71,6 @@ namespace RoleplayGame
         public void DoEncounter()
         {   
             int i = 0;
-            int j = 0;
             int largoEnemigos = this.badGuys.Count;
             int largoHeroes = this.heroes.Count;
             while (HayPersonajesVivos(this.heroes) && HayPersonajesVivos(this.badGuys))
