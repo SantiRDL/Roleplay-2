@@ -10,11 +10,11 @@ namespace Program
             SpellsBook book = new SpellsBook();
             book.Spells = new Spell[]{ new Spell() };
 
-            Wizard gandalf = new Wizard("Gandalf");
+            Wizard gandalf = new Wizard("Gandalf", true);
             gandalf.Staff = new Staff();
             gandalf.SpellsBook = book;
 
-            Dwarf gimli = new Dwarf("Gimli");
+            Dwarf gimli = new Dwarf("Gimli", false);
             gimli.OffensiveItem = new Axe();
             gimli.DefensiveItem1 = new Helmet();
 
@@ -28,6 +28,8 @@ namespace Program
             gimli.Cure();
 
             Console.WriteLine($"Gimli has ❤️ {gimli.Health}");
+
+            
         }
     }
 }
