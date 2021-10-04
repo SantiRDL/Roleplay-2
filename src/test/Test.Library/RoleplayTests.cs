@@ -68,6 +68,25 @@ namespace Test.Library
             
             Assert.AreEqual(encuentro.HayPersonajesVivos(encuentro.badGuys), false);
 
+        [Test]
+        public void EncounterTestMoreEnemysThanHeros()
+        {
+            Character heroe1 = new Knight("Caballero", true);
+            Character enemigo1 = new Archer("Arquera", false);
+            Character enemigo2 = new Wizard("Mago", false);
+
+            Encounter encuentro = new Encounter();
+            encuentro.AgregarPersonaje(heroe1);
+            encuentro.AgregarPersonaje(enemigo1);
+            encuentro.AgregarPersonaje(enemigo2);
+            encuentro.DoEncounter();
+            
+            Assert.AreEqual(encuentro.HayPersonajesVivos(encuentro.heroes), false);
+
+            
+        }
+        
+
 
 
 
